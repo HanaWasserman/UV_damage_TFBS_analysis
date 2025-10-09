@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+CONFIG_FILE="$1"
+TF_LEN="$2"
+TF="$3"
+
+source "$CONFIG_FILE"
+
+REQUIRED_VARS=("MAIN_DIR" "BOOTSTRAP_SAMPS" "DHS_FILE" "TIMECOURSE_EXP1" "TIMECOURSE_EXP2")
+for var in "${REQUIRED_VARS[@]}"; do
+  if [ -z "${!var}" ]; then
+    echo "Error: Variable '$var' not set in config file."
+    exit 1
+  fi
+done
+
+OUTPUT_PATH="${MAIN_DIR}/results/analysis/repair"
+
+
+export PYTHONPATH="${MAIN_DIR}:${PYTHONPATH}"
+
+python3 scripts/repair/analyze_TFBS_repair_sims.py \
+  "$MAIN_DIR" \
+  "$TIMECOURSE_EXP1" \
+  "$TIMECOURSE_EXP2" \
+  "${DHS_FILE%.bed}" \
+  "$BOOTSTRAP_SAMPS" \
+  "$TF_LEN" \
+  "$TF"
+
+echo "Analysis of damage repair simulations in TF binding sites is completed for: $TF"
+echo "Results saved in: $OUTPUT_PATH"

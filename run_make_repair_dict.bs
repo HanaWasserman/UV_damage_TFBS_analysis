@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+CONFIG_FILE="$1"
+
+source "$CONFIG_FILE"
+
+REQUIRED_VARS=("MAIN_DIR" "KMER_LENGTH" "DHS_FILE" "TIMECOURSE_EXP1" "TIMECOURSE_EXP2")
+for var in "${REQUIRED_VARS[@]}"; do
+  if [ -z "${!var}" ]; then
+    echo "Error: Variable '$var' not set in config file."
+    exit 1
+  fi
+done
+
+OUTPUT_PATH="${MAIN_DIR}/results/background"
+
+
+export PYTHONPATH="${MAIN_DIR}:${PYTHONPATH}"
+
+
+python3 scripts/repair/make_repair_dictionary.py \
+  "$MAIN_DIR" \
+  "${DHS_FILE%.bed}" \
+  "$KMER_LENGTH" \
+  "$TIMECOURSE_EXP1" \
+  "$TIMECOURSE_EXP2"
+
+echo "Repair dictionary made for $TIMECOURSE_EXP1 vs $TIMECOURSE_EXP2"
+echo "Results saved in: $OUTPUT_PATH"

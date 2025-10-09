@@ -1,0 +1,23 @@
+#Paths to input/output directories
+folders:
+  genome_dir: /Users/hanawasserman/PycharmProjects/genomes
+  main_dir: /Users/hanawasserman/PycharmProjects/UV_damage_TFBS_analysis
+  cpd_seq_data_dir: /Users/hanawasserman/PycharmProjects/CPDdata
+
+#Experimental parameters
+parameters:
+  tf_window_size: 100
+  kmer_length: 6
+  damage_formation_analysis_window : 40
+  damage_repair_analysis_window : 30
+  tfbs_buffer_size : 5
+  bootstrap_samps : 100
+
+#File names
+files:
+  archetype_file: archetype_motifs_intersect_WT_CSB_hg19_idr_conservative_summits_150bp_intergenic.bed
+  dhs_file: WT_CSB_hg19_idr_conservative_summits_150bp_intergenic_sorted_merged.bed
+  motif_cluster_file: TF_cluster_motifs_sample.csv
+  experiments : [WT_CSB_6J_0hr_CPD_1bp_sorted, WT_CSB_6J_6hr_CPD_1bp_sorted, XPC_12J_NakedDNA_S22_CPD_1bp_sorted]
+  timecourse_exp1 : WT_CSB_6J_0hr_CPD_1bp_sorted
+  timecourse_exp2 : WT_CSB_6J_6hr_CPD_1bp_sorted

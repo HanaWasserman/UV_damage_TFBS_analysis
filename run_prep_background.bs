@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+CONFIG_FILE="$1"
+
+
+source "$CONFIG_FILE"
+
+REQUIRED_VARS=("GENOME_DIR" "MAIN_DIR" "DATA_DIR" "KMER_LENGTH" "DHS_FILE" "EXPERIMENTS")
+for var in "${REQUIRED_VARS[@]}"; do
+  if [ -z "${!var}" ]; then
+    echo "Error: Variable '$var' not set in config file."
+    exit 1
+  fi
+done
+
+OUTPUT_PATH="${MAIN_DIR}/results/background"
+
+export PYTHONPATH="${MAIN_DIR}:${PYTHONPATH}"
+
+EXPERIMENTS_STR=$(IFS=,; echo "${EXPERIMENTS[*]}")
+python3 scripts/prep_background.py \
+  "$MAIN_DIR" \
+  "${DHS_FILE%.bed}" \
+  "$GENOME_DIR" \
+  "$KMER_LENGTH" \
+  "$DATA_DIR" \
+  "$EXPERIMENTS_STR"
+
+echo "Background model pipeline completed successfully."
+echo "Results saved in: $OUTPUT_PATH"
+

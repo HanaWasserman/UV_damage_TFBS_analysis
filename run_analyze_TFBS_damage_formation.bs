@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+CONFIG_FILE="$1"
+TF_LEN="$2"
+TF="$3"
+
+source "$CONFIG_FILE"
+
+REQUIRED_VARS=("MAIN_DIR" "TF_WINDOW_SIZE" "KMER_LENGTH" \
+"DAMAGE_FORMATION_WINDOW" "TFBS_BUFFER" "DHS_FILE" "EXPERIMENTS")
+for var in "${REQUIRED_VARS[@]}"; do
+  if [ -z "${!var}" ]; then
+    echo "Error: Variable '$var' not set in config file."
+    exit 1
+  fi
+done
+
+OUTPUT_PATH="${MAIN_DIR}/results/analysis/damage_formation"
+
+
+export PYTHONPATH="${MAIN_DIR}:${PYTHONPATH}"
+
+EXPERIMENTS_STR=$(IFS=,; echo "${EXPERIMENTS[*]}")
+
+python3 scripts/damage_formation/analyze_TFBS_damage.py \
+  "$MAIN_DIR" \
+  "$KMER_LENGTH" \
+  "$TF_WINDOW_SIZE" \
+  "$DAMAGE_FORMATION_WINDOW" \
+  "${DHS_FILE%.bed}" \
+  "$EXPERIMENTS_STR" \
+  "$TF_LEN" \
+  "$TF"
+
+echo "Analysis of damage formation in TF binding sites is completed for: $TF"
+echo "Results saved in: $OUTPUT_PATH"

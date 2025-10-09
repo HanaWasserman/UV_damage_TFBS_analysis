@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+CONFIG_FILE="$1"
+
+source "$CONFIG_FILE"
+
+REQUIRED_VARS=("MAIN_DIR")
+for var in "${REQUIRED_VARS[@]}"; do
+  if [ -z "${!var}" ]; then
+    echo "Error: Variable '$var' not set in config file."
+    exit 1
+  fi
+done
+
+BACKGROUND_PATH="${MAIN_DIR}/results/background"
+TFBS_PATH="${MAIN_DIR}/results/TFBS"
+TF_DATA_PATH="${MAIN_DIR}/results/TF_damage_data"
+DAMAGE_FORMATION_PATH="${MAIN_DIR}/results/analysis/damage_formation"
+DAMAGE_REPAIR_PATH="${MAIN_DIR}/results/analysis/repair"
+REPAIR_SIMS_PATH="${MAIN_DIR}/results/analysis/repair/raw_simulations"
+
+#Check output folders exist
+for DIR in "$BACKGROUND_PATH" "$TFBS_PATH" "$TF_DATA_PATH" "$DAMAGE_FORMATION_PATH" "$DAMAGE_REPAIR_PATH" "$REPAIR_SIMS_PATH"; do
+  if [ ! -d "$DIR" ]; then
+    echo "Output directory not found. Creating: $DIR"
+    mkdir -p "$DIR"
+  else
+    echo "Output directory exists: $DIR"
+  fi
+done
+
+echo "Set up complete"

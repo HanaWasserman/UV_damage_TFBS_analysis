@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+CONFIG_FILE="$1"
+TF_CLUSTER="$2"
+TF_LEN="$3"
+TF="$4"
+
+source "$CONFIG_FILE"
+
+REQUIRED_VARS=("GENOME_DIR" "MAIN_DIR" "DATA_DIR" "TF_WINDOW_SIZE" \
+"KMER_LENGTH" "DAMAGE_FORMATION_WINDOW" "ARCHETYPE_FILE" \
+"DHS_FILE" "EXPERIMENTS")
+for var in "${REQUIRED_VARS[@]}"; do
+  if [ -z "${!var}" ]; then
+    echo "Error: Variable '$var' not set in config file."
+    exit 1
+  fi
+done
+
+TFBS_OUTPUT_PATH="${MAIN_DIR}/results/TFBS"
+TF_DATA_OUTPUT_PATH="${MAIN_DIR}/results/TF_damage_data"
+
+export PYTHONPATH="${MAIN_DIR}:${PYTHONPATH}"
+
+python3 scripts/prep_TFBS.py \
+  "$MAIN_DIR" \
+  "$GENOME_DIR" \
+  "$ARCHETYPE_FILE" \
+  "$TF_WINDOW_SIZE" \
+  "$KMER_LENGTH" \
+  "$TF_CLUSTER" \
+  "$TF_LEN" \
+  "$TF"
+
+echo "TF binding site preparation and kmer counting is completed for: $TF"
+echo "Results saved in: $TFBS_OUTPUT_PATH"
+
+EXPERIMENTS_STR=$(IFS=,; echo "${EXPERIMENTS[*]}")
+python3 scripts/process_TFBS_damages.py \
+  "$MAIN_DIR" \
+  "$GENOME_DIR" \
+  "$DATA_DIR" \
+  "$KMER_LENGTH" \
+  "$TF_WINDOW_SIZE" \
+  "$EXPERIMENTS_STR" \
+  "$TF"
+
+echo "Data processing for TF binding sites is completed for: $MOTIF_CLUSTER_FILE"
+echo "Results saved in: $TF_DATA_OUTPUT_PATH"
