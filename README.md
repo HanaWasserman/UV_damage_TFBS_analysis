@@ -2,9 +2,9 @@
 Code and scripts for the paper "High-throughput characterization of TFs that modulate UV damage formation and repair at single-nucleotide resolution"
 
 ### Data used
-* Bedfile containing genomic regions for the analysis. For e.g. all intergenic, open chromatin regions (ATAC-seq) for the cell-line of interest with blacklist regions substracted. Included at `/data/WT_CSB_hg19_idr_conservative_summits_150bp_intergenic_sorted_merged.bed`
-* Binding site calls of TF motif clusters from [Vierstra et al. (2020)](https://www.vierstra.org/resources/motif_clustering) intersected with previously described genomic regions. Included at `/data/archetype_motifs_intersect_WT_CSB_hg19_idr_conservative_summits_150bp_intergenic.bed`
-* Manifest of TF motif clusters to use for the analysis. Included at `/data/TF_cluster_motifs.csv` 
+* Bedfile containing genomic regions for the analysis. For e.g. all intergenic, open chromatin regions (ATAC-seq) for the cell-line of interest with blacklist regions substracted.
+* Binding site calls of TF motif clusters from [Vierstra et al. (2020)](https://www.vierstra.org/resources/motif_clustering) intersected with previously described genomic regions.
+* Manifest of TF motif clusters to use for the analysis. 
 * CPD-seq v2.0 data from [Duan et al. (2024)](https://www.pnas.org/doi/10.1073/pnas.2310854121). Download from GEO accession number [GSE235483](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE235483).  
 * hg19 reference genome. Download from [UCSC Genome Browser](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/).
 
