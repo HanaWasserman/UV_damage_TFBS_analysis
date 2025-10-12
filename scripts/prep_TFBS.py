@@ -46,7 +46,10 @@ def prep_tfbs(tf_cluster, tf_len, tf, tf_path, genome_path, archetype_file, tf_w
         tf_1 = tf_bed_reordered.loc[tf_bed_reordered['score'].between(tf_score_0, tf_score_1)].copy().reset_index(drop=True)
         tf_2 = tf_bed_reordered.loc[tf_bed_reordered['score'].between(tf_score_1, tf_score_2)].copy().reset_index(drop=True)
         tf_1.to_csv(f"{tf_path}/{tf}_bottom_{tf_window_size}_seq.bed", header=None, index=False, sep='\t')
-        tf_2.to_csv(f"{tf_path}/{tf}_top_{tf_window_size}_seq.bed", header=None, index=False, sep='\t')
+        tf_2.sort_values(by='score', ascending=False)[:15000].to_csv(f"{tf_path}/{tf}_top_{tf_window_size}_seq_tmp.bed", header=None, index=False, sep='\t')
+        os.system(f"bedtools sort -i {tf_path}/{tf}_top_{tf_window_size}_seq_tmp.bed > {tf_path}/{tf}_top_{tf_window_size}_seq.bed")
+        os.remove(f"{tf_path}/{tf}_top_{tf_window_size}_seq_tmp.bed")
+        #tf_2.to_csv(f"{tf_path}/{tf}_top_{tf_window_size}_seq.bed", header=None, index=False, sep='\t')
 
     slop_it(window_shft_sz)
 
