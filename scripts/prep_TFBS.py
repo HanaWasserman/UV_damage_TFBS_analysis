@@ -9,8 +9,6 @@ def prep_tfbs(tf_cluster, tf_len, tf, tf_path, genome_path, archetype_file, tf_w
     """
     Subset binding site windows for TF of interest
     """
-    if not os.path.exists(tf_path):
-        os.system(f"mkdir {tf_path}")
 
     window_shft_sz = tf_window_size - (tf_len // 2)
     gen_fa_fai, gen_fa = f'{genome_path}/hg19/hg19.fa.fai', f'{genome_path}/hg19/hg19.fa'
@@ -95,8 +93,8 @@ if __name__ == "__main__":
     tf_cluster = sys.argv[6]
     tf_len = int(sys.argv[7])
     tf = sys.argv[8]
+    data_path = sys.argv[9]
     tf_path = f'{main_dir}/results/TFBS'
-    data_path = f'{main_dir}/data'
 
     print(f"Processing {tf_cluster}...")
     prep_tfbs(tf_cluster, tf_len, tf, tf_path, genome_path, archetype_file, tf_window_size, data_path)

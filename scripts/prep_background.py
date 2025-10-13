@@ -5,17 +5,15 @@ pd.options.mode.chained_assignment = None
 import progressbar
 from utils.pipeline_functions import rev_complement, adjust_kmer, filter_kmer, init4mers, init6mers
 
-def prep_background_regions(dhs_file, dhs_path, output_path, genome_path):
+def prep_background_regions(dhs_file, data_path, output_path, genome_path):
     '''
     Subset intergenic, open chromatin regions for background modeling
     '''
-    if not os.path.exists(dhs_path):
-        os.system(f"mkdir {output_path}")
 
     gen_fa_fai, gen_fa = f'{genome_path}/hg19/hg19.fa.fai', f'{genome_path}/hg19/hg19.fa'
 
-    os.system(f"bedtools getfasta -fi {gen_fa} -bed {dhs_path}/{dhs_file}.bed -fo {output_path}/{dhs_file}_tmp_seq -bedOut")
-    dhs_bed = pd.read_table(f'{dhs_path}/{dhs_file}.bed', header=None, names=['chrom','start','end'])
+    os.system(f"bedtools getfasta -fi {gen_fa} -bed {data_path}/{dhs_file}.bed -fo {output_path}/{dhs_file}_tmp_seq -bedOut")
+    dhs_bed = pd.read_table(f'{data_path}/{dhs_file}.bed', header=None, names=['chrom','start','end'])
     seqs = pd.read_table(f"{output_path}/{dhs_file}_tmp_seq", header=None)
     dhs_bed['seq'] = seqs[0].str.upper()
     dhs_bed_complete = rev_complement(dhs_bed)
@@ -23,14 +21,14 @@ def prep_background_regions(dhs_file, dhs_path, output_path, genome_path):
     dhs_bed_reordered = dhs_bed_complete[['chrom','start','end','seq','seq_rv']].copy()
     dhs_bed_reordered.to_csv(f"{output_path}/{dhs_file}_seq.bed", header=None, index=False, sep='\t')
 
-def proc_background_dams(dhs_file, kmer, exp, output_path, data_path, dhs_path, genome_path, offset=1):
+def proc_background_dams(dhs_file, kmer, exp, output_path, data_path, genome_path, offset=1):
 
     fasta = f"{genome_path}/hg19/hg19.fa"
     f_path = f"{output_path}/{dhs_file}_{exp}_{kmer}mer"
 
     def prep_damage(strand_txt):
         print(f'Preparing: {f_path}')
-        os.system(f"bedtools intersect -u -a {data_path}/{exp}_{strand_txt}_agg_filt.bed -b {dhs_path}/{dhs_file}.bed > {f_path}_{strand_txt}strand.bed")  # OUTPUT1, OUTPUT2
+        os.system(f"bedtools intersect -u -a {data_path}/{exp}_{strand_txt}_agg_filt.bed -b {data_path}/{dhs_file}.bed > {f_path}_{strand_txt}strand.bed")  # OUTPUT1, OUTPUT2
         df = pd.read_table(f'{f_path}_{strand_txt}strand.bed', header=None, names=['chr', 'st', 'end', 'counts'])
         return df
 
@@ -150,11 +148,10 @@ if __name__ == "__main__":
     data_path = sys.argv[5]
     experiments_str = sys.argv[6]
     experiments = experiments_str.split(",")
-    dhs_path = f'{main_dir}/data'
     output_path = f'{main_dir}/results/background'
 
-    prep_background_regions(dhs_file, dhs_path, output_path, genome_path)
+    prep_background_regions(dhs_file, data_path, output_path, genome_path)
     for exp in experiments:
-        proc_background_dams(dhs_file, kmer, exp, output_path, data_path, dhs_path, genome_path)
+        proc_background_dams(dhs_file, kmer, exp, output_path, data_path, genome_path)
         prep_background_dams(dhs_file, exp, kmer, output_path)
         make_damage_model(dhs_file, kmer, exp, output_path)

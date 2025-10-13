@@ -124,7 +124,6 @@ if __name__ == "__main__":
     tf_len = int(sys.argv[7])
     tf = sys.argv[8]
     experiments = experiments_str.split(",")
-    motif_path = f'{main_dir}/data'
     background_path = f'{main_dir}/results/background'
     tf_data_path = f'{main_dir}/results/TF_damage_data'
     tf_path = f'{main_dir}/results/TFBS'

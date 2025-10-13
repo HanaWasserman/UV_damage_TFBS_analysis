@@ -33,7 +33,8 @@ python3 scripts/prep_TFBS.py \
   "$KMER_LENGTH" \
   "$TF_CLUSTER" \
   "$TF_LEN" \
-  "$TF"
+  "$TF" \
+  "$DATA_DIR"
 
 echo "TF binding site preparation and kmer counting is completed for: $TF"
 echo "Results saved in: $TFBS_OUTPUT_PATH"

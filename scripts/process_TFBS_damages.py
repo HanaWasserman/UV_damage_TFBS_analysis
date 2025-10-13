@@ -135,7 +135,6 @@ if __name__ == "__main__":
     experiments_str = sys.argv[6]
     tf = sys.argv[7]
     experiments = experiments_str.split(",")
-    motif_path = f'{main_dir}/data'
     tf_path = f'{main_dir}/results/TFBS'
     output_path = f'{main_dir}/results/TF_damage_data'
 
