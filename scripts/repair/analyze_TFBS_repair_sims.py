@@ -5,7 +5,7 @@ import re
 import sys
 
 
-def analyze_repair_sims(tf, tf_len, exp1, exp2, samp_n, dhs_file, analysis_path, mode="cumulative"):
+def analyze_repair_sims(tf, tf_len, exp1, exp2, samp_n, dhs_file, analysis_path, repair_window, mode="cumulative"):
 
     def analyze_strand(strand):
         def get_scaling_factor(df, start, stop):
@@ -27,7 +27,7 @@ def analyze_repair_sims(tf, tf_len, exp1, exp2, samp_n, dhs_file, analysis_path,
             dfs.append(df)
 
         sim = pd.concat(dfs, ignore_index=True)
-        sim['pos'] = sim['pos'] - 30
+        sim['pos'] = sim['pos'] - repair_window
         print(sim)
         sim_agg = sim.groupby(by=['pos', 'count_1', 'count_2', 'strand','TF'], as_index=False).mean()
         sim_agg = sim_agg.sort_values(by='pos')
@@ -87,11 +87,12 @@ if __name__ == "__main__":
     exp1 = sys.argv[2]
     exp2 = sys.argv[3]
     dhs_file = sys.argv[4]
-    samp_n = sys.argv[5]
-    tf_len = int(sys.argv[6])
-    tf = sys.argv[7]
+    samp_n = int(sys.argv[5])
+    repair_window = int(sys.argv[6])
+    tf_len = int(sys.argv[7])
+    tf = sys.argv[8]
     analysis_path = f"{main_dir}/results/analysis/repair"
 
 
-    analyze_repair_sims(tf, tf_len, exp1, exp2, samp_n, dhs_file, analysis_path)
+    analyze_repair_sims(tf, tf_len, exp1, exp2, samp_n, dhs_file, analysis_path, repair_window)
 

@@ -1,0 +1,35 @@
+#!/bin/bash
+#SBATCH --job-name=sim_repair
+#SBATCH --output=results/logs/sim_repair_pipeline.out
+#SBATCH --error=results/logs/sim_repair_pipeline.err
+#SBATCH --partition=compsci
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=8G
+#SBATCH --wait
+
+source /home/users/hiw4/miniconda3/etc/profile.d/conda.sh
+conda activate tfbs_cpd
+
+set -e
+set -o pipefail
+
+CONFIG_FILE="$1"
+
+source "$CONFIG_FILE"
+
+REQUIRED_VARS=("MOTIF_CLUSTER_FILE")
+for var in "${REQUIRED_VARS[@]}"; do
+  if [ -z "${!var}" ]; then
+    echo "Error: Variable '$var' not set in config file."
+    exit 1
+  fi
+done
+
+
+# Loop through each line in the CSV
+while IFS=',' read -r TF_CLUSTER TF_LEN TF; do
+    echo "Submitting jobs for transcription factor: $TF"
+    sbatch batch_tfbs_repair_sim.slurm "$CONFIG_FILE" "$TF"
+done < $MOTIF_CLUSTER_FILE

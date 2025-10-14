@@ -44,12 +44,11 @@ if __name__ == "__main__":
     tf = sys.argv[2]
     exp1 = sys.argv[3]
     exp2 = sys.argv[4]
-    mode = sys.argv[5]
-    strand = sys.argv[6]
-    dhs_file = sys.argv[7]
-    tf_window_size = sys.argv[8]
-    samp_n = sys.argv[9]
-    repair_window = sys.argv[10]
+    strand = sys.argv[5]
+    dhs_file = sys.argv[6]
+    tf_window_size = sys.argv[7]
+    samp_n = sys.argv[8]
+    repair_window = sys.argv[9]
     output_path = f"{main_dir}/results/analysis/repair"
     background_path = f"{main_dir}/results/background"
     tf_data_path = f"{main_dir}/results/tf_damage_data"
