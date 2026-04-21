@@ -69,6 +69,8 @@ This creates a job for each position in a TF binding site window.
 #### 4. Analyze repair simulations
 Scales and analyzes repair simulations:
 
-`bash `
+`bash run_analyze_TFBS_repair`
+
+This will empirically assess repair activity from the simulations in step 3. 
 
 
